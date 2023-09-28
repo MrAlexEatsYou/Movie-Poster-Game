@@ -14,34 +14,34 @@ export default function App() {
       "https://images.squarespace-cdn.com/content/v1/5acd17597c93273e08da4786/1547847934765-ZOU5KGSHYT6UVL6O5E5J/Shrek+Poster.png",
   });
 
+  function GetMoviePage(pageNum) {
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1YWQzZGQ2MzA0OTBmMDcyMDIxNDI1ODU3ZGRmZTUyNyIsInN1YiI6IjY1MTMzZDZhYWFkOWMyMDEzYmQ1Yjc3OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.vmrd5wR2GfgxgDjWdo8s07w4WBz8vJOJPkLD11wge_E",
+      },
+    };
+
+    return fetch(
+      `https://api.themoviedb.org/3/movie/top_rated?language=en-US&region=US&page=${pageNum}&with_original_language=en`,
+      options,
+    )
+      .then((response) => response.json())
+      .then((response) => {
+        return response;
+      })
+      .catch((err) => console.error(err));
+  }
+
   function GetMovieList() {
-    function GetMoviePage(pageNum) {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1YWQzZGQ2MzA0OTBmMDcyMDIxNDI1ODU3ZGRmZTUyNyIsInN1YiI6IjY1MTMzZDZhYWFkOWMyMDEzYmQ1Yjc3OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.vmrd5wR2GfgxgDjWdo8s07w4WBz8vJOJPkLD11wge_E",
-        },
-      };
-
-      return fetch(
-        `https://api.themoviedb.org/3/movie/top_rated?language=en-US&region=US&page=${pageNum}&with_original_language=en`,
-        options,
-      )
-        .then((response) => response.json())
-        .then((response) => {
-          return response;
-        })
-        .catch((err) => console.error(err));
-    }
-
     let tmdbPages = 10;
     let movieList = [];
 
-    for (var page = 1; i <= tmdbPages; page++) {
+    for (var page = 1; page <= tmdbPages; page++) {
       (async function () {
-        moviePage = await GetMoviePage(i);
+        moviePage = await GetMoviePage(page);
         moviePage.results.forEach((el) => {
           if (el["backdrop_path"]) {
             movieList.push(el);
@@ -49,6 +49,7 @@ export default function App() {
         });
       })();
     }
+    return movieList;
   }
 
   function ToggleState(identifiers) {
