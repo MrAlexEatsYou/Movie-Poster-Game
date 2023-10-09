@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/Movie-Poster-Game/static/css/main.4555fd62.css",
-    "main.js": "/Movie-Poster-Game/static/js/main.576fcb61.js",
-    "index.html": "/Movie-Poster-Game/index.html",
-    "main.4555fd62.css.map": "/Movie-Poster-Game/static/css/main.4555fd62.css.map",
-    "main.576fcb61.js.map": "/Movie-Poster-Game/static/js/main.576fcb61.js.map"
+    "main.css": "/MrAlexEatsYou/Movie-Poster-Game/static/css/main.4555fd62.css",
+    "main.js": "/MrAlexEatsYou/Movie-Poster-Game/static/js/main.05c59208.js",
+    "index.html": "/MrAlexEatsYou/Movie-Poster-Game/index.html",
+    "main.4555fd62.css.map": "/MrAlexEatsYou/Movie-Poster-Game/static/css/main.4555fd62.css.map",
+    "main.05c59208.js.map": "/MrAlexEatsYou/Movie-Poster-Game/static/js/main.05c59208.js.map"
   },
   "entrypoints": [
     "static/css/main.4555fd62.css",
-    "static/js/main.576fcb61.js"
+    "static/js/main.05c59208.js"
   ]
 }
