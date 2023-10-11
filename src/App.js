@@ -15,7 +15,7 @@ export default function App() {
       "https://images.squarespace-cdn.com/content/v1/5acd17597c93273e08da4786/1547847934765-ZOU5KGSHYT6UVL6O5E5J/Shrek+Poster.png",
   });
 
-  var fullMovieList;
+  //setInterval(() => console.log(appStates), 5000);
 
   async function GetMovieList() {
     let tmdbPages = 10;
@@ -59,11 +59,14 @@ export default function App() {
   });
 
   async function UpdateMovieListState() {
-    let movieList = fullMovieList;
+    let movieList = await GetMovieList();
+    let shuffled = movieList.sort(() => 0.5 - Math.random());
+    let reduced = shuffled;
+    shuffled.length = 10;
     setAppStates((currentState) => {
       return {
         ...currentState,
-        movieList: movieList,
+        movieList: shuffled,
       };
     });
   }
@@ -87,8 +90,6 @@ export default function App() {
     });
   }
 
-  console.log(appStates.movieList);
-
   return (
     <div className="App">
       <div className="app-background vh-100 vw-100 d-flex flex-row bg-primary justify-content-center align-items-center">
@@ -104,7 +105,6 @@ export default function App() {
           <button
             onClick={() => {
               UpdateMovieListState();
-              console.log(fullMovieList);
               ToggleState(["welcomeDisplay", "gameCanvasDisplay"]);
               IncrementLevel();
             }}
