@@ -5,17 +5,20 @@ import "./styles.css";
 export default function App() {
   const [appStates, setAppStates] = useState({
     movieList: [],
+    gameMovieList: [],
+    loading: false,
     welcomeDisplay: true,
     gameCanvasDisplay: false,
     gameLevelDisplay: false,
     gameLevels: 10,
     gameCurrentLevel: 0,
+    levelCurrentMovie: 1,
     levelImgAlt: 0,
     levelImgSrc:
       "https://images.squarespace-cdn.com/content/v1/5acd17597c93273e08da4786/1547847934765-ZOU5KGSHYT6UVL6O5E5J/Shrek+Poster.png",
   });
 
-  //setInterval(() => console.log(appStates), 5000);
+  setInterval(() => console.log(appStates), 5000);
 
   async function GetMovieList() {
     let tmdbPages = 10;
@@ -24,11 +27,12 @@ export default function App() {
     for (var page = 1; page <= tmdbPages; page++) {
       let moviePage = await GetMoviePage(page);
       moviePage.results.forEach((el) => {
-        if (el["backdrop_path"]) {
+        if (el["poster_path"]) {
           movieList.push(el);
         }
       });
     }
+    IncrementLevel();
     return movieList;
   }
 
@@ -52,21 +56,17 @@ export default function App() {
       .catch((err) => console.error(err));
   }
 
-  useEffect(() => {
-    async () => {
-      fullMovieList = await GetMovieList();
-    };
-  });
-
   async function UpdateMovieListState() {
     let movieList = await GetMovieList();
     let shuffled = movieList.sort(() => 0.5 - Math.random());
-    let reduced = shuffled;
-    shuffled.length = 10;
+    let reduced = [...shuffled];
+    reduced.length = 10;
     setAppStates((currentState) => {
       return {
         ...currentState,
         movieList: shuffled,
+        gameMovieList: reduced,
+        loading: false,
       };
     });
   }
@@ -90,12 +90,31 @@ export default function App() {
     });
   }
 
+  function UpdateLevel() {
+    setAppStates((currentState) => {
+      return {
+        ...currentState,
+        levelCurrentMovie:
+          currentState.gameMovieList[currentState.gameCurrentLevel - 1],
+      };
+    });
+  }
+
+  useEffect(() => {
+    if (appStates.gameCurrentLevel > 0) {
+      UpdateLevel();
+    }
+  }, [appStates.gameCurrentLevel]);
+
   return (
     <div className="App">
       <div className="app-background vh-100 vw-100 d-flex flex-row bg-primary justify-content-center align-items-center">
         <div
           className="welcome welcomeDisplay bg-light w-50 h-50 p-3 flex-column justify-content-around align-items-center rounded"
-          style={{ display: appStates.welcomeDisplay ? "flex" : "none" }}
+          style={{
+            display:
+              appStates.welcomeDisplay && !appStates.loading ? "flex" : "none",
+          }}
         >
           <h1>Guess The Poster!</h1>
           <p className="welcome-text w-75">
@@ -105,8 +124,7 @@ export default function App() {
           <button
             onClick={() => {
               UpdateMovieListState();
-              ToggleState(["welcomeDisplay", "gameCanvasDisplay"]);
-              IncrementLevel();
+              ToggleState(["loading", "welcomeDisplay", "gameCanvasDisplay"]);
             }}
             className="get-started-btn btn btn-primary btn-lg"
           >
@@ -114,8 +132,19 @@ export default function App() {
           </button>
         </div>
         <div
+          className="loading"
+          style={{ display: appStates.loading ? "flex" : "none" }}
+        >
+          LOADING!
+        </div>
+        <div
           className="game-canvas gameCanvasDisplay bg-light w-100 h-100 m-4 p-3 flex-column justify-content-around align-items-center rounded"
-          style={{ display: appStates.gameCanvasDisplay ? "flex" : "none" }}
+          style={{
+            display:
+              appStates.gameCanvasDisplay && !appStates.loading
+                ? "flex"
+                : "none",
+          }}
         >
           <div className="game-level gameLevelDisplay w-100 h-100 p-2 d-flex flex-column justify-content-around align-items-center">
             <span className="round-identifier p-2">
@@ -124,7 +153,10 @@ export default function App() {
             <div className="poster-container h-75 overflow-hidden shadow">
               <img
                 className="poster w-100 h-100"
-                src={appStates.levelImgSrc}
+                src={
+                  "https://image.tmdb.org/t/p/w500" +
+                  appStates.levelCurrentMovie["poster_path"]
+                }
                 alt={appStates.levelImgAlt}
               ></img>
             </div>
