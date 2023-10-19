@@ -12,13 +12,18 @@ export default function App() {
     gameLevelDisplay: false,
     gameLevels: 10,
     gameCurrentLevel: 0,
-    levelCurrentMovie: 1,
+    levelCurrentMovie: 0,
+    levelAnswers: [],
     levelImgAlt: 0,
     levelImgSrc:
       "https://images.squarespace-cdn.com/content/v1/5acd17597c93273e08da4786/1547847934765-ZOU5KGSHYT6UVL6O5E5J/Shrek+Poster.png",
   });
 
   setInterval(() => console.log(appStates), 5000);
+
+  function RandomNumber(upperLimit) {
+    return Math.floor(Math.random() * upperLimit);
+  }
 
   async function GetMovieList() {
     let tmdbPages = 10;
@@ -32,7 +37,9 @@ export default function App() {
         }
       });
     }
+
     IncrementLevel();
+
     return movieList;
   }
 
@@ -92,12 +99,32 @@ export default function App() {
 
   function UpdateLevel() {
     setAppStates((currentState) => {
+      let levelMovie =
+        currentState.gameMovieList[currentState.gameCurrentLevel - 1];
       return {
         ...currentState,
-        levelCurrentMovie:
-          currentState.gameMovieList[currentState.gameCurrentLevel - 1],
+        levelCurrentMovie: levelMovie,
+        levelAnswers: UpdateLevelAnswers(levelMovie),
       };
     });
+  }
+
+  function UpdateLevelAnswers(levelMovie) {
+    let movieListRange = (appStates.gameCurrentLevel + 1) * 10;
+    let answerArr = [];
+    answerArr[0] = levelMovie;
+    answerArr[1] = appStates.movieList[movieListRange];
+    answerArr[2] = appStates.movieList[movieListRange + 1];
+    answerArr[3] = appStates.movieList[movieListRange + 2];
+    console.log(answerArr);
+
+    answerArr[0].isAnswer = true;
+    answerArr[1].isAnswer = false;
+    answerArr[2].isAnswer = false;
+    answerArr[3].isAnswer = false;
+
+    answerArr = answerArr.sort(() => 0.5 - Math.random());
+    return answerArr;
   }
 
   useEffect(() => {
@@ -105,6 +132,17 @@ export default function App() {
       UpdateLevel();
     }
   }, [appStates.gameCurrentLevel]);
+
+  function ReturnLevelAnswers(index) {
+    //console.log(appStates.levelAnswers);
+    if (appStates.levelAnswers[index]) {
+      if ("original_title" in appStates.levelAnswers[index]) {
+        return appStates.levelAnswers[index].original_title;
+      } else {
+        return "Error Retrieving Answer";
+      }
+    }
+  }
 
   return (
     <div className="App">
@@ -163,18 +201,18 @@ export default function App() {
             <div className="game-answers d-flex w-100 h-50 p-sm-3 p-lg-5 flex-column justify-content-around align-items-center">
               <div className="game-answers-row-1 w-100 h-100 d-flex flex-row justify-content-around align-items-center">
                 <button className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50">
-                  Shrek
+                  {ReturnLevelAnswers(0)}
                 </button>
                 <button className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50">
-                  Shrek 2
+                  {ReturnLevelAnswers(1)}
                 </button>
               </div>
               <div className="game-answers-row-2 w-100 h-100 d-flex flex-row justify-content-around align-items-center">
                 <button className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50">
-                  Shrek 3
+                  {ReturnLevelAnswers(2)}
                 </button>
                 <button className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50">
-                  Shrek 4
+                  {ReturnLevelAnswers(3)}
                 </button>
               </div>
             </div>
