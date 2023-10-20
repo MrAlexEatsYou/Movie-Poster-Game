@@ -10,16 +10,25 @@ export default function App() {
     welcomeDisplay: true,
     gameCanvasDisplay: false,
     gameLevelDisplay: false,
+    gameResultsDisplay: false,
     gameLevels: 10,
     gameCurrentLevel: 0,
+    levelScore: 0,
     levelCurrentMovie: 0,
     levelAnswers: [],
     levelImgAlt: 0,
     levelImgSrc:
       "https://images.squarespace-cdn.com/content/v1/5acd17597c93273e08da4786/1547847934765-ZOU5KGSHYT6UVL6O5E5J/Shrek+Poster.png",
+    resultScore: 0,
+    resultMaxScore: "",
+    resultMessage: "",
   });
 
-  setInterval(() => console.log(appStates), 5000);
+  var answerButtons = document.querySelectorAll(".game-answer");
+
+  useEffect(() => {
+    console.log(appStates);
+  });
 
   function RandomNumber(upperLimit) {
     return Math.floor(Math.random() * upperLimit);
@@ -74,6 +83,7 @@ export default function App() {
         movieList: shuffled,
         gameMovieList: reduced,
         loading: false,
+        gameCanvasDisplay: true,
       };
     });
   }
@@ -89,6 +99,7 @@ export default function App() {
   }
 
   function IncrementLevel() {
+    ResetAnswers();
     setAppStates((currentState) => {
       return {
         ...currentState,
@@ -105,6 +116,7 @@ export default function App() {
         ...currentState,
         levelCurrentMovie: levelMovie,
         levelAnswers: UpdateLevelAnswers(levelMovie),
+        levelScore: 4,
       };
     });
   }
@@ -127,12 +139,6 @@ export default function App() {
     return answerArr;
   }
 
-  useEffect(() => {
-    if (appStates.gameCurrentLevel > 0) {
-      UpdateLevel();
-    }
-  }, [appStates.gameCurrentLevel]);
-
   function ReturnLevelAnswers(index) {
     //console.log(appStates.levelAnswers);
     if (appStates.levelAnswers[index]) {
@@ -144,14 +150,83 @@ export default function App() {
     }
   }
 
+  function IsAnswer(index) {
+    console.log(appStates.levelAnswers[index].isAnswer);
+    if (appStates.levelAnswers[index].isAnswer) {
+      setAppStates((currentState) => {
+        return {
+          ...currentState,
+          resultScore: currentState.resultScore + currentState.levelScore,
+        };
+      });
+      IncrementLevel();
+    } else {
+      console.log("DisableAnswer");
+      DisableAnswer(index);
+      setAppStates((currentState) => {
+        return { ...currentState, levelScore: currentState.levelScore - 1 };
+      });
+    }
+  }
+
+  function DisableAnswer(index) {
+    console.log(answerButtons);
+    answerButtons[index].classList.add("btn-secondary");
+    answerButtons[index].classList.remove("btn-primary");
+  }
+
+  function ResetAnswers() {
+    answerButtons.forEach((el) => {
+      el.classList.add("btn-primary");
+      el.classList.remove("btn-secondary");
+    });
+  }
+
+  function GameResult() {
+    let resultMessage;
+    let resultMaxScore = appStates.gameLevels * 4;
+
+    let scorePercent = (100 * appStates.resultScore) / resultMaxScore;
+
+    if (scorePercent < 20) {
+      resultMessage = "NOT SO GOOD";
+    } else if (scorePercent > 19 && scorePercent < 40) {
+      resultMessage = "NOT TOO BAD";
+    } else if (scorePercent > 39 && scorePercent < 60) {
+      resultMessage = "MIDDLE OF THE ROAD";
+    } else if (scorePercent > 59 && scorePercent < 80) {
+      resultMessage = "GOOD SCORE";
+    } else if (scorePercent > 79 && scorePercent < 90) {
+      resultMessage = "AMAZING SCORE";
+    } else if (scorePercent > 89 && scorePercent < 101) {
+      resultMessage = "OUTSTANDING SCORE";
+    }
+
+    setAppStates((currenState) => {
+      return {
+        ...currenState,
+        resultMessage: resultMessage,
+        resultMaxScore: resultMaxScore,
+      };
+    });
+  }
+
+  useEffect(() => {
+    if (appStates.gameCurrentLevel > 0 && appStates.gameCurrentLevel < 11) {
+      UpdateLevel();
+    } else if (appStates.gameCurrentLevel > 10) {
+      GameResult();
+      ToggleState(["gameResultsDisplay", "gameCanvasDisplay"]);
+    }
+  }, [appStates.gameCurrentLevel]);
+
   return (
     <div className="App">
       <div className="app-background vh-100 vw-100 d-flex flex-row bg-primary justify-content-center align-items-center">
         <div
           className="welcome welcomeDisplay bg-light w-50 h-50 p-3 flex-column justify-content-around align-items-center rounded"
           style={{
-            display:
-              appStates.welcomeDisplay && !appStates.loading ? "flex" : "none",
+            display: appStates.welcomeDisplay ? "flex" : "none",
           }}
         >
           <h1>Guess The Poster!</h1>
@@ -162,7 +237,7 @@ export default function App() {
           <button
             onClick={() => {
               UpdateMovieListState();
-              ToggleState(["loading", "welcomeDisplay", "gameCanvasDisplay"]);
+              ToggleState(["loading", "welcomeDisplay"]);
             }}
             className="get-started-btn btn btn-primary btn-lg"
           >
@@ -178,10 +253,7 @@ export default function App() {
         <div
           className="game-canvas gameCanvasDisplay bg-light w-100 h-100 m-4 p-3 flex-column justify-content-around align-items-center rounded"
           style={{
-            display:
-              appStates.gameCanvasDisplay && !appStates.loading
-                ? "flex"
-                : "none",
+            display: appStates.gameCanvasDisplay ? "flex" : "none",
           }}
         >
           <div className="game-level gameLevelDisplay w-100 h-100 p-2 d-flex flex-column justify-content-around align-items-center">
@@ -200,23 +272,56 @@ export default function App() {
             </div>
             <div className="game-answers d-flex w-100 h-50 p-sm-3 p-lg-5 flex-column justify-content-around align-items-center">
               <div className="game-answers-row-1 w-100 h-100 d-flex flex-row justify-content-around align-items-center">
-                <button className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50">
+                <button
+                  className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50"
+                  onClick={() => {
+                    IsAnswer(0);
+                  }}
+                >
                   {ReturnLevelAnswers(0)}
                 </button>
-                <button className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50">
+                <button
+                  className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50"
+                  onClick={() => {
+                    IsAnswer(1);
+                  }}
+                >
                   {ReturnLevelAnswers(1)}
                 </button>
               </div>
               <div className="game-answers-row-2 w-100 h-100 d-flex flex-row justify-content-around align-items-center">
-                <button className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50">
+                <button
+                  className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50"
+                  onClick={() => {
+                    IsAnswer(2);
+                  }}
+                >
                   {ReturnLevelAnswers(2)}
                 </button>
-                <button className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50">
+                <button
+                  className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50"
+                  onClick={() => {
+                    IsAnswer(3);
+                  }}
+                >
                   {ReturnLevelAnswers(3)}
                 </button>
               </div>
             </div>
           </div>
+        </div>
+        <div
+          className="game-results bg-light w-50 h-50 p-3 flex-column justify-content-around align-items-center rounded"
+          style={{
+            display: appStates.gameResultsDisplay ? "flex" : "none",
+          }}
+        >
+          <h3 className="game-results-message w-75">
+            {appStates.resultMessage}
+          </h3>
+          <h3 className="game-results-message w-75">
+            {appStates.resultScore}/{appStates.resultMaxScore}
+          </h3>
         </div>
       </div>
     </div>
