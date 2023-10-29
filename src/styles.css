@@ -1,8 +1,16 @@
+:root {
+  --poster-blur: 5px;
+}
+
 .App {
   font-family: sans-serif;
   text-align: center;
 }
 
 .poster {
-  filter: blur(30px);
+  filter: blur(var(--poster-blur));
+}
+
+.toggle-containter {
+  margin-left: 2%;
 }

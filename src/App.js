@@ -8,6 +8,7 @@ export default function App() {
     gameMovieList: [],
     loading: false,
     welcomeDisplay: true,
+    gameBlurValue: 0,
     gameCanvasDisplay: false,
     gameLevelDisplay: false,
     gameResultsDisplay: false,
@@ -33,6 +34,14 @@ export default function App() {
   function RandomNumber(upperLimit) {
     return Math.floor(Math.random() * upperLimit);
   }
+
+  const handleSliderChange = (event) => {
+    const value = parseInt(event.target.value, 10);
+    setAppStates((currentState) => {
+      return { ...currentState, gameBlurValue: value };
+    });
+    document.documentElement.style.setProperty("--poster-blur", `${value}px`);
+  };
 
   async function GetMovieList() {
     let tmdbPages = 10;
@@ -62,7 +71,7 @@ export default function App() {
       },
     };
     return fetch(
-      `https://api.themoviedb.org/3/movie/top_rated?language=en-US&region=US&page=${pageNum}&with_original_language=en`,
+      `https://api.themoviedb.org/3/movie/popular?language=en-US&region=US&page=${pageNum}&with_original_language=en`,
       options,
     )
       .then((response) => response.json())
@@ -234,6 +243,44 @@ export default function App() {
             A movie poster guessing game. Guess the title form the blurred movie
             poster!
           </p>
+          <div className="slider-container bg-success p-2 w-100 rounded">
+            <h5>Blur Amount</h5>
+            <div className="container justify-content-center align-items-center">
+              <div className="slider justify-content-center">
+                <div className="col px-2">
+                  <input
+                    type="range"
+                    min={5}
+                    max={30}
+                    step={5}
+                    value={appStates.gameBlurValue}
+                    onChange={handleSliderChange}
+                    className="form-range"
+                  />
+                </div>
+                <div className="toggle-containter d-flex flex-row justify-content-between flex-nowrap g-0">
+                  <div className="toggle-label text-center p-2 bg-primary rounded">
+                    5
+                  </div>
+                  <div className="toggle-label text-center p-2 bg-primary rounded">
+                    10
+                  </div>
+                  <div className="toggle-label text-center p-2 bg-primary rounded">
+                    15
+                  </div>
+                  <div className="toggle-label text-center p-2 bg-primary rounded">
+                    20
+                  </div>
+                  <div className="toggle-label text-center p-2 bg-primary rounded">
+                    25
+                  </div>
+                  <div className="toggle-label text-center p-2 bg-primary rounded">
+                    30
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <button
             onClick={() => {
               UpdateMovieListState();
