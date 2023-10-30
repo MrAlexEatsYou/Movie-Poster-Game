@@ -8,7 +8,7 @@ export default function App() {
     gameMovieList: [],
     loading: false,
     welcomeDisplay: true,
-    gameBlurValue: 0,
+    gameBlurValue: 2,
     gameCanvasDisplay: false,
     gameLevelDisplay: false,
     gameResultsDisplay: false,
@@ -18,8 +18,7 @@ export default function App() {
     levelCurrentMovie: 0,
     levelAnswers: [],
     levelImgAlt: 0,
-    levelImgSrc:
-      "https://images.squarespace-cdn.com/content/v1/5acd17597c93273e08da4786/1547847934765-ZOU5KGSHYT6UVL6O5E5J/Shrek+Poster.png",
+    levelImgSrc: "",
     resultScore: 0,
     resultMaxScore: "",
     resultMessage: "",
@@ -34,14 +33,6 @@ export default function App() {
   function RandomNumber(upperLimit) {
     return Math.floor(Math.random() * upperLimit);
   }
-
-  const handleSliderChange = (event) => {
-    const value = parseInt(event.target.value, 10);
-    setAppStates((currentState) => {
-      return { ...currentState, gameBlurValue: value };
-    });
-    document.documentElement.style.setProperty("--poster-blur", `${value}px`);
-  };
 
   async function GetMovieList() {
     let tmdbPages = 10;
@@ -180,14 +171,14 @@ export default function App() {
 
   function DisableAnswer(index) {
     console.log(answerButtons);
-    answerButtons[index].classList.add("btn-secondary");
+    answerButtons[index].classList.add("btn-danger");
     answerButtons[index].classList.remove("btn-primary");
   }
 
   function ResetAnswers() {
     answerButtons.forEach((el) => {
       el.classList.add("btn-primary");
-      el.classList.remove("btn-secondary");
+      el.classList.remove("btn-danger");
     });
   }
 
@@ -229,11 +220,38 @@ export default function App() {
     }
   }, [appStates.gameCurrentLevel]);
 
+  const blurValues = [
+    ["Very Easy", 5],
+    ["Easy", 10],
+    ["Medium", 15],
+    ["Hard", 20],
+    ["Very Hard", 25],
+    ["Impossible", 30],
+  ];
+
+  const handleSliderChange = (event) => {
+    let inputValue = event.target.value;
+    setAppStates((currentStates) => {
+      return {
+        ...currentStates,
+        gameBlurValue: inputValue,
+      };
+    });
+  };
+
+  useEffect(() => {
+    let index = appStates.gameBlurValue;
+    document.documentElement.style.setProperty(
+      "--poster-blur",
+      `${blurValues[index][1]}px`,
+    );
+  });
+
   return (
     <div className="App">
-      <div className="app-background vh-100 vw-100 d-flex flex-row bg-primary justify-content-center align-items-center">
+      <div className="app-background vh-100 vw-100 d-flex flex-row bg-light justify-content-center align-items-center">
         <div
-          className="welcome welcomeDisplay bg-light w-50 h-50 p-3 flex-column justify-content-around align-items-center rounded"
+          className="welcome welcomeDisplay shadow-lg bg-light w-50 h-50 p-3 flex-column justify-content-around align-items-center rounded"
           style={{
             display: appStates.welcomeDisplay ? "flex" : "none",
           }}
@@ -243,43 +261,25 @@ export default function App() {
             A movie poster guessing game. Guess the title form the blurred movie
             poster!
           </p>
-          <div className="slider-container bg-success p-2 w-100 rounded">
-            <h5>Blur Amount</h5>
-            <div className="container justify-content-center align-items-center">
-              <div className="slider justify-content-center">
-                <div className="col px-2">
-                  <input
-                    type="range"
-                    min={5}
-                    max={30}
-                    step={5}
-                    value={appStates.gameBlurValue}
-                    onChange={handleSliderChange}
-                    className="form-range"
-                  />
-                </div>
-                <div className="toggle-containter d-flex flex-row justify-content-between flex-nowrap g-0">
-                  <div className="toggle-label text-center p-2 bg-primary rounded">
-                    5
-                  </div>
-                  <div className="toggle-label text-center p-2 bg-primary rounded">
-                    10
-                  </div>
-                  <div className="toggle-label text-center p-2 bg-primary rounded">
-                    15
-                  </div>
-                  <div className="toggle-label text-center p-2 bg-primary rounded">
-                    20
-                  </div>
-                  <div className="toggle-label text-center p-2 bg-primary rounded">
-                    25
-                  </div>
-                  <div className="toggle-label text-center p-2 bg-primary rounded">
-                    30
-                  </div>
-                </div>
-              </div>
+          <div className="slider-container d-flex flex-column align-items-center bg-info p-2 rounded col-12 col-md-8">
+            <label htmlFor="slider" className="form-label">
+              <h4 className=" bg-light rounded py-2 px-3 m-0 fw-bold w-100">
+                Difficulty
+              </h4>
+            </label>
+            <div class="arrow-container d-flex flex-row justiy-content-center">
+              <div class="arrow arrow-left fs-3 text px-3 m-0 fw-bold">←</div>
+              <div class="arrow arrow-right fs-3 text px-3 m-0 fw-bold">→</div>
             </div>
+            <input
+              type="range"
+              className="form-range px-3"
+              min="0"
+              max="5"
+              value={appStates.gameBlurValue}
+              onChange={handleSliderChange}
+            />
+            <h5>{blurValues[appStates.gameBlurValue][0]}</h5>
           </div>
           <button
             onClick={() => {
@@ -358,7 +358,7 @@ export default function App() {
           </div>
         </div>
         <div
-          className="game-results bg-light w-50 h-50 p-3 flex-column justify-content-around align-items-center rounded"
+          className="game-results bg-light shadow-lg w-50 h-50 p-3 flex-column justify-content-around align-items-center rounded"
           style={{
             display: appStates.gameResultsDisplay ? "flex" : "none",
           }}
