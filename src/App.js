@@ -25,9 +25,9 @@ export default function App() {
     tmdbURL: {
       origin: "https://api.themoviedb.org/3/discover/",
       media: "movie",
-      sort: "vote_average.desc",
+      sort: "popularity.desc",
       params:
-        "?include_adult=false&include_video=false&language=en-US&region=US&with_original_language=en&without_genres=99,10755",
+        "?include_adult=false&include_video=false&language=en-US&region=US&with_original_language=en",
     },
   });
 
@@ -289,13 +289,13 @@ export default function App() {
     <div className="App">
       <div className="app-background vh-100 vw-100 d-flex flex-row bg-light justify-content-center align-items-center">
         <div
-          className="welcome welcomeDisplay shadow-lg bg-light w-50 h-75 p-3 flex-column justify-content-around align-items-center rounded"
+          className="welcome welcomeDisplay shadow-lg bg-light p-3 flex-column justify-content-around align-items-center rounded"
           style={{
             display: appStates.welcomeDisplay ? "flex" : "none",
           }}
         >
           <h1>Guess The Poster!</h1>
-          <p className="welcome-text w-75">
+          <p className="welcome-text">
             A movie poster guessing game. Guess the title from the blurred movie
             poster!
           </p>
@@ -316,9 +316,13 @@ export default function App() {
               value={appStates.gameBlurValue}
               onChange={handleSliderChange}
             />
-            <div class="arrow-container d-flex flex-row justiy-content-center">
-              <div class="arrow arrow-left fs-4 text px-3 m-0 fw-bold">←</div>
-              <div class="arrow arrow-right fs-4 text px-3 m-0 fw-bold">→</div>
+            <div className="arrow-container d-flex flex-row justiy-content-center">
+              <div className="arrow arrow-left fs-4 text px-3 m-0 fw-bold">
+                ←
+              </div>
+              <div className="arrow arrow-right fs-4 text px-3 m-0 fw-bold">
+                →
+              </div>
             </div>
           </div>
           <div className="game-container d-flex flex-column align-items-center bg-info p-2 rounded col-12 col-md-8 mb-1">
@@ -384,8 +388,10 @@ export default function App() {
               <img
                 className="poster w-100 h-100"
                 src={
-                  "https://image.tmdb.org/t/p/w500" +
-                  appStates.levelCurrentMovie["poster_path"]
+                  appStates.levelCurrentMovie == 0
+                    ? null
+                    : "https://image.tmdb.org/t/p/w500" +
+                      appStates.levelCurrentMovie["poster_path"]
                 }
                 alt={appStates.levelImgAlt}
               ></img>
@@ -436,10 +442,8 @@ export default function App() {
             display: appStates.gameResultsDisplay ? "flex" : "none",
           }}
         >
-          <h3 className="game-results-message w-75">
-            {appStates.resultMessage}
-          </h3>
-          <h3 className="game-results-message w-75">
+          <h3 className="game-results-message">{appStates.resultMessage}</h3>
+          <h3 className="game-results-message">
             {appStates.resultScore}/{appStates.resultMaxScore}
           </h3>
         </div>
