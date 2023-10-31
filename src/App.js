@@ -42,8 +42,14 @@ export default function App() {
   }
 
   async function GetMovieList() {
-    let tmdbPages = appStates.gameLevels;
+    let tmdbPages;
     let movieList = [];
+
+    if (appStates.gameLevels * 20 >= 200) {
+      tmdbPages = appStates.gameLevels;
+    } else {
+      tmdbPages = 10;
+    }
 
     for (var page = 1; page <= tmdbPages; page++) {
       let moviePage = await GetMoviePage(page);
