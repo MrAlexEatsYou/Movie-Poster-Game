@@ -42,7 +42,7 @@ export default function App() {
   }
 
   async function GetMovieList() {
-    let tmdbPages = 10;
+    let tmdbPages = appStates.gameLevels;
     let movieList = [];
 
     for (var page = 1; page <= tmdbPages; page++) {
@@ -84,7 +84,7 @@ export default function App() {
     let movieList = await GetMovieList();
     let shuffled = movieList.sort(() => 0.5 - Math.random());
     let reduced = [...shuffled];
-    reduced.length = 10;
+    reduced.length = appStates.gameLevels;
     setAppStates((currentState) => {
       return {
         ...currentState,
@@ -130,7 +130,8 @@ export default function App() {
   }
 
   function UpdateLevelAnswers(levelMovie) {
-    let movieListRange = (appStates.gameCurrentLevel + 1) * 10;
+    let movieListRange =
+      (appStates.gameCurrentLevel + 1) * appStates.gameLevels;
     let answerArr = [];
     answerArr[0] = levelMovie;
     answerArr[1] = appStates.movieList[movieListRange];
@@ -220,9 +221,12 @@ export default function App() {
   }
 
   useEffect(() => {
-    if (appStates.gameCurrentLevel > 0 && appStates.gameCurrentLevel < 11) {
+    if (
+      appStates.gameCurrentLevel > 0 &&
+      appStates.gameCurrentLevel <= appStates.gameLevels
+    ) {
       UpdateLevel();
-    } else if (appStates.gameCurrentLevel > 10) {
+    } else if (appStates.gameCurrentLevel > appStates.gameLevels) {
       GameResult();
       ToggleState(["gameResultsDisplay", "gameCanvasDisplay"]);
     }
@@ -261,6 +265,16 @@ export default function App() {
       return {
         ...currentStates,
         tmdbURL: { ...currentStates.tmdbURL, sort: inputValue },
+      };
+    });
+  };
+
+  const handleLevelChange = (event) => {
+    let inputValue = event.target.value;
+    setAppStates((currentStates) => {
+      return {
+        ...currentStates,
+        gameLevels: inputValue,
       };
     });
   };
@@ -320,7 +334,20 @@ export default function App() {
                 <option value="revenue.desc">Box Office Revenue</option>
               </select>
             </div>
+            <div className="select-container bg-light rounded py-2 m-0 mb-2 fw-bold">
+              <label htmlFor="game-levels" className="select-label mx-2">
+                Levels
+              </label>
+              <input
+                placeholder="10"
+                name="game-levels"
+                type="text"
+                className="game-levels w-25"
+                onChange={handleLevelChange}
+              />
+            </div>
           </div>
+
           <button
             onClick={() => {
               UpdateMovieListState();
@@ -345,7 +372,7 @@ export default function App() {
         >
           <div className="game-level gameLevelDisplay w-100 h-100 p-2 d-flex flex-column justify-content-around align-items-center">
             <span className="round-identifier p-2">
-              Round {appStates.gameCurrentLevel}/10
+              Round {appStates.gameCurrentLevel}/{appStates.gameLevels}
             </span>
             <div className="poster-container h-75 overflow-hidden shadow">
               <img
