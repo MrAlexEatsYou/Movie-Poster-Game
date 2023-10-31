@@ -22,6 +22,13 @@ export default function App() {
     resultScore: 0,
     resultMaxScore: "",
     resultMessage: "",
+    tmdbURL: {
+      origin: "https://api.themoviedb.org/3/discover/",
+      media: "movie",
+      sort: "vote_average.desc",
+      params:
+        "?include_adult=false&include_video=false&language=en-US&region=US&with_original_language=en&without_genres=99,10755",
+    },
   });
 
   var answerButtons = document.querySelectorAll(".game-answer");
@@ -53,6 +60,7 @@ export default function App() {
   }
 
   async function GetMoviePage(pageNum) {
+    let tmdbURL = appStates.tmdbURL;
     const options = {
       method: "GET",
       headers: {
@@ -62,7 +70,7 @@ export default function App() {
       },
     };
     return fetch(
-      `https://api.themoviedb.org/3/movie/popular?language=en-US&region=US&page=${pageNum}&with_original_language=en`,
+      `${tmdbURL.origin}${tmdbURL.media}${tmdbURL.params}&sort_by=${tmdbURL.sort}&page=${pageNum}`,
       options,
     )
       .then((response) => response.json())
@@ -247,30 +255,39 @@ export default function App() {
     );
   });
 
+  const handleFilterChange = (event) => {
+    let inputValue = event.target.value;
+    setAppStates((currentStates) => {
+      return {
+        ...currentStates,
+        tmdbURL: { ...currentStates.tmdbURL, sort: inputValue },
+      };
+    });
+  };
+
   return (
     <div className="App">
       <div className="app-background vh-100 vw-100 d-flex flex-row bg-light justify-content-center align-items-center">
         <div
-          className="welcome welcomeDisplay shadow-lg bg-light w-50 h-50 p-3 flex-column justify-content-around align-items-center rounded"
+          className="welcome welcomeDisplay shadow-lg bg-light w-50 h-75 p-3 flex-column justify-content-around align-items-center rounded"
           style={{
             display: appStates.welcomeDisplay ? "flex" : "none",
           }}
         >
           <h1>Guess The Poster!</h1>
           <p className="welcome-text w-75">
-            A movie poster guessing game. Guess the title form the blurred movie
+            A movie poster guessing game. Guess the title from the blurred movie
             poster!
           </p>
-          <div className="slider-container d-flex flex-column align-items-center bg-info p-2 rounded col-12 col-md-8">
-            <label htmlFor="slider" className="form-label">
-              <h4 className=" bg-light rounded py-2 px-3 m-0 fw-bold w-100">
+          <div className="slider-container d-flex flex-column align-items-center bg-info p-2 rounded col-12 col-md-8 mb-1">
+            <label htmlFor="slider" className="form-label m-0">
+              <h4 className=" bg-light rounded py-2 px-3 m-0 fw-bold">
                 Difficulty
               </h4>
+              <h5 className="m-0 p-2">
+                {blurValues[appStates.gameBlurValue][0]}
+              </h5>
             </label>
-            <div class="arrow-container d-flex flex-row justiy-content-center">
-              <div class="arrow arrow-left fs-3 text px-3 m-0 fw-bold">←</div>
-              <div class="arrow arrow-right fs-3 text px-3 m-0 fw-bold">→</div>
-            </div>
             <input
               type="range"
               className="form-range px-3"
@@ -279,7 +296,30 @@ export default function App() {
               value={appStates.gameBlurValue}
               onChange={handleSliderChange}
             />
-            <h5>{blurValues[appStates.gameBlurValue][0]}</h5>
+            <div class="arrow-container d-flex flex-row justiy-content-center">
+              <div class="arrow arrow-left fs-4 text px-3 m-0 fw-bold">←</div>
+              <div class="arrow arrow-right fs-4 text px-3 m-0 fw-bold">→</div>
+            </div>
+          </div>
+          <div className="game-container d-flex flex-column align-items-center bg-info p-2 rounded col-12 col-md-8 mb-1">
+            <h4 className="game-options bg-light rounded py-2 px-3 m-0 mb-2 fw-bold">
+              Options
+            </h4>
+            <div className="select-container bg-light rounded py-2 m-0 mb-2 fw-bold">
+              <label htmlFor="game-category" className="select-label mx-2">
+                Filter
+              </label>
+              <select
+                name="game-category"
+                id="game-category"
+                className="mx-2"
+                onChange={handleFilterChange}
+              >
+                <option value="popularity.desc">Trending</option>
+                <option value="vote_average.desc">Review Score</option>
+                <option value="revenue.desc">Box Office Revenue</option>
+              </select>
+            </div>
           </div>
           <button
             onClick={() => {
