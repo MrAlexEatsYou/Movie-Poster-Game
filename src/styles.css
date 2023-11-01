@@ -20,6 +20,10 @@
   margin: 1%;
 }
 
+.bg-info {
+  background-color: lightgrey !important;
+}
+
 .lds-dual-ring {
   display: inline-block;
   width: 80px;
