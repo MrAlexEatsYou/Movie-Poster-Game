@@ -411,9 +411,17 @@ export default function App() {
           }}
         >
           <div className="game-level gameLevelDisplay w-100 h-100 p-2 d-flex flex-column justify-content-around align-items-center">
-            <h4 className="round-identifier p-2">
-              Round {appStates.gameCurrentLevel}/{appStates.gameLevels}
-            </h4>
+            <div className="score-container w-100 d-flex mb-3 align-items-center justify-content-evenly">
+              <h4 className="round-identifier button btn disabled bg-info p-2 rounded shadow col-3">
+                Round {appStates.gameCurrentLevel}/{appStates.gameLevels}
+              </h4>
+              <h4 className="round-identifier button btn disabled bg-info align-items-center p-2 rounded shadow col-3">
+                Level Score {appStates.levelScore}/4
+              </h4>
+              <h4 className="round-identifier button btn disabled bg-info align-items-center p-2 rounded shadow col-3">
+                Game Score {appStates.resultScore}/{appStates.gameLevels * 4}
+              </h4>
+            </div>
             <div className="poster-container d-flex overflow-hidden h-75 shadow">
               <img
                 className="poster w-auto h-100"
@@ -472,7 +480,7 @@ export default function App() {
             {appStates.resultMessage}
           </h4>
           <h3 className="game-results-message">
-            {appStates.resultScore}/{appStates.resultMaxScore}
+            Score: {appStates.resultScore}/{appStates.resultMaxScore}
           </h3>
           <button
             className="button btn btn-lg btn-primary"
