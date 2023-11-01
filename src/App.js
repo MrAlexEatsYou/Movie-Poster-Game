@@ -2,34 +2,38 @@ import { useState, useEffect } from "react";
 
 import "./styles.css";
 
+import winningMessages from "./winningMessages.json";
+
+const initialState = {
+  movieList: [],
+  gameMovieList: [],
+  loading: false,
+  welcomeDisplay: true,
+  gameBlurValue: 2,
+  gameCanvasDisplay: false,
+  gameLevelDisplay: false,
+  gameResultsDisplay: false,
+  gameLevels: 10,
+  gameCurrentLevel: 0,
+  levelScore: 0,
+  levelCurrentMovie: 0,
+  levelAnswers: [],
+  levelImgAlt: 0,
+  levelImgSrc: "",
+  resultScore: 0,
+  resultMaxScore: "",
+  resultMessage: "",
+  tmdbURL: {
+    origin: "https://api.themoviedb.org/3/discover/",
+    media: "movie",
+    sort: "popularity.desc",
+    params:
+      "?include_adult=false&include_video=false&language=en-US&region=US&with_original_language=en",
+  },
+};
+
 export default function App() {
-  const [appStates, setAppStates] = useState({
-    movieList: [],
-    gameMovieList: [],
-    loading: false,
-    welcomeDisplay: true,
-    gameBlurValue: 2,
-    gameCanvasDisplay: false,
-    gameLevelDisplay: false,
-    gameResultsDisplay: false,
-    gameLevels: 10,
-    gameCurrentLevel: 0,
-    levelScore: 0,
-    levelCurrentMovie: 0,
-    levelAnswers: [],
-    levelImgAlt: 0,
-    levelImgSrc: "",
-    resultScore: 0,
-    resultMaxScore: "",
-    resultMessage: "",
-    tmdbURL: {
-      origin: "https://api.themoviedb.org/3/discover/",
-      media: "movie",
-      sort: "popularity.desc",
-      params:
-        "?include_adult=false&include_video=false&language=en-US&region=US&with_original_language=en",
-    },
-  });
+  const [appStates, setAppStates] = useState(initialState);
 
   var answerButtons = document.querySelectorAll(".game-answer");
 
@@ -40,6 +44,10 @@ export default function App() {
   function RandomNumber(upperLimit) {
     return Math.floor(Math.random() * upperLimit);
   }
+
+  const ResetState = () => {
+    setAppStates(initialState);
+  };
 
   async function GetMovieList() {
     let tmdbPages;
@@ -214,18 +222,20 @@ export default function App() {
 
     let scorePercent = (100 * appStates.resultScore) / resultMaxScore;
 
+    let index = RandomNumber(10);
+
     if (scorePercent < 20) {
-      resultMessage = "NOT SO GOOD";
+      resultMessage = winningMessages[0][index];
     } else if (scorePercent > 19 && scorePercent < 40) {
-      resultMessage = "NOT TOO BAD";
+      resultMessage = winningMessages[1][index];
     } else if (scorePercent > 39 && scorePercent < 60) {
-      resultMessage = "MIDDLE OF THE ROAD";
+      resultMessage = winningMessages[2][index];
     } else if (scorePercent > 59 && scorePercent < 80) {
-      resultMessage = "GOOD SCORE";
+      resultMessage = winningMessages[3][index];
     } else if (scorePercent > 79 && scorePercent < 90) {
-      resultMessage = "AMAZING SCORE";
+      resultMessage = winningMessages[4][index];
     } else if (scorePercent > 89 && scorePercent < 101) {
-      resultMessage = "OUTSTANDING SCORE";
+      resultMessage = winningMessages[5][index];
     }
 
     setAppStates((currenState) => {
@@ -389,9 +399,9 @@ export default function App() {
           className="loading"
           style={{ display: appStates.loading ? "flex" : "none" }}
         >
-          <div class="loading-container">
-            <div class="lds-dual-ring"></div>
-            <div class="loading-text">Getting things ready...</div>
+          <div className="loading-container">
+            <div className="lds-dual-ring"></div>
+            <div className="loading-text">Getting things ready...</div>
           </div>
         </div>
         <div
@@ -458,10 +468,18 @@ export default function App() {
             display: appStates.gameResultsDisplay ? "flex" : "none",
           }}
         >
-          <h3 className="game-results-message">{appStates.resultMessage}</h3>
+          <h4 className="game-results-message align-start ">
+            {appStates.resultMessage}
+          </h4>
           <h3 className="game-results-message">
             {appStates.resultScore}/{appStates.resultMaxScore}
           </h3>
+          <button
+            className="button btn btn-lg btn-primary"
+            onClick={ResetState}
+          >
+            Play Again!
+          </button>
         </div>
       </div>
     </div>
