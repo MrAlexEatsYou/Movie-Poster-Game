@@ -289,13 +289,13 @@ export default function App() {
     <div className="App">
       <div className="app-background vh-100 vw-100 d-flex flex-row bg-light justify-content-center align-items-center">
         <div
-          className="welcome welcomeDisplay shadow-lg bg-light p-3 flex-column justify-content-around align-items-center rounded"
+          className="welcome welcomeDisplay shadow-lg bg-light p-3 flex-column justify-content-around align-items-center rounded col-12 col-sm-10 col-md-10 col-lg-6"
           style={{
             display: appStates.welcomeDisplay ? "flex" : "none",
           }}
         >
           <h1>Guess The Poster!</h1>
-          <p className="welcome-text">
+          <p className="welcome-text col-8">
             A movie poster guessing game. Guess the title from the blurred movie
             poster!
           </p>
@@ -329,14 +329,17 @@ export default function App() {
             <h4 className="game-options bg-light rounded py-2 px-3 m-0 mb-2 fw-bold">
               Options
             </h4>
-            <div className="select-container bg-light rounded py-2 m-0 mb-2 fw-bold">
-              <label htmlFor="game-category" className="select-label mx-2">
-                Filter
+            <div className="select-container d-flex bg-light rounded py-2 m-0 mb-2 fw-bold col-10">
+              <label
+                htmlFor="game-category"
+                className="select-label text-end mx-2 col-3 col-sm-4"
+              >
+                Filter:
               </label>
               <select
                 name="game-category"
                 id="game-category"
-                className="mx-2"
+                className=""
                 onChange={handleFilterChange}
               >
                 <option value="popularity.desc">Trending</option>
@@ -344,15 +347,18 @@ export default function App() {
                 <option value="revenue.desc">Box Office Revenue</option>
               </select>
             </div>
-            <div className="select-container bg-light rounded py-2 m-0 mb-2 fw-bold">
-              <label htmlFor="game-levels" className="select-label mx-2">
-                Levels
+            <div className="select-container d-flex bg-light rounded py-2 m-0 mb-2 fw-bold col-10">
+              <label
+                htmlFor="game-levels"
+                className="select-label text-end mx-2 col-3 col-sm-4"
+              >
+                Levels:
               </label>
               <input
                 placeholder="10"
                 name="game-levels"
                 type="text"
-                className="game-levels w-25"
+                className="game-levels col-2"
                 onChange={handleLevelChange}
               />
             </div>
@@ -372,7 +378,10 @@ export default function App() {
           className="loading"
           style={{ display: appStates.loading ? "flex" : "none" }}
         >
-          LOADING!
+          <div class="loading-container">
+            <div class="lds-dual-ring"></div>
+            <div class="loading-text">Getting things ready...</div>
+          </div>
         </div>
         <div
           className="game-canvas gameCanvasDisplay bg-light w-100 h-100 m-4 p-3 flex-column justify-content-around align-items-center rounded"
@@ -381,12 +390,12 @@ export default function App() {
           }}
         >
           <div className="game-level gameLevelDisplay w-100 h-100 p-2 d-flex flex-column justify-content-around align-items-center">
-            <span className="round-identifier p-2">
+            <h4 className="round-identifier p-2">
               Round {appStates.gameCurrentLevel}/{appStates.gameLevels}
-            </span>
-            <div className="poster-container h-75 overflow-hidden shadow">
+            </h4>
+            <div className="poster-container d-flex overflow-hidden h-75 shadow">
               <img
-                className="poster w-100 h-100"
+                className="poster w-auto h-100"
                 src={
                   appStates.levelCurrentMovie == 0
                     ? null
@@ -396,43 +405,39 @@ export default function App() {
                 alt={appStates.levelImgAlt}
               ></img>
             </div>
-            <div className="game-answers d-flex w-100 h-50 p-sm-3 p-lg-5 flex-column justify-content-around align-items-center">
-              <div className="game-answers-row-1 w-100 h-100 d-flex flex-row justify-content-around align-items-center">
-                <button
-                  className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50"
-                  onClick={() => {
-                    IsAnswer(0);
-                  }}
-                >
-                  {ReturnLevelAnswers(0)}
-                </button>
-                <button
-                  className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50"
-                  onClick={() => {
-                    IsAnswer(1);
-                  }}
-                >
-                  {ReturnLevelAnswers(1)}
-                </button>
-              </div>
-              <div className="game-answers-row-2 w-100 h-100 d-flex flex-row justify-content-around align-items-center">
-                <button
-                  className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50"
-                  onClick={() => {
-                    IsAnswer(2);
-                  }}
-                >
-                  {ReturnLevelAnswers(2)}
-                </button>
-                <button
-                  className="game-answer button btn btn-lg btn-primary m-1 h-75 w-50"
-                  onClick={() => {
-                    IsAnswer(3);
-                  }}
-                >
-                  {ReturnLevelAnswers(3)}
-                </button>
-              </div>
+            <div className="game-answers d-flex flex-row justify-content-around align-items-stretch flex-wrap h-50 my-3">
+              <button
+                className="game-answer button btn btn-lg btn-primary"
+                onClick={() => {
+                  IsAnswer(0);
+                }}
+              >
+                {ReturnLevelAnswers(0)}
+              </button>
+              <button
+                className="game-answer button btn btn-lg btn-primary"
+                onClick={() => {
+                  IsAnswer(1);
+                }}
+              >
+                {ReturnLevelAnswers(1)}
+              </button>
+              <button
+                className="game-answer button btn btn-lg btn-primary"
+                onClick={() => {
+                  IsAnswer(2);
+                }}
+              >
+                {ReturnLevelAnswers(2)}
+              </button>
+              <button
+                className="game-answer button btn btn-lg btn-primary"
+                onClick={() => {
+                  IsAnswer(3);
+                }}
+              >
+                {ReturnLevelAnswers(3)}
+              </button>
             </div>
           </div>
         </div>
