@@ -168,13 +168,16 @@ export default function App() {
   function IsAnswer(index) {
     console.log(appStates.levelAnswers[index].isAnswer);
     if (appStates.levelAnswers[index].isAnswer) {
+      DisableAnswers();
+      answerButtons[index].classList.add("btn-success");
+      answerButtons[index].classList.remove("btn-primary");
       setAppStates((currentState) => {
         return {
           ...currentState,
           resultScore: currentState.resultScore + currentState.levelScore,
         };
       });
-      IncrementLevel();
+      setTimeout(() => IncrementLevel(), 1500);
     } else {
       console.log("DisableAnswer");
       DisableAnswer(index);
@@ -194,6 +197,14 @@ export default function App() {
     answerButtons.forEach((el) => {
       el.classList.add("btn-primary");
       el.classList.remove("btn-danger");
+      el.classList.remove("btn-success");
+      el.classList.remove("disabled");
+    });
+  }
+
+  function DisableAnswers() {
+    answerButtons.forEach((el) => {
+      el.classList.add("disabled");
     });
   }
 
