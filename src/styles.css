@@ -1,6 +1,24 @@
 :root {
   --poster-blur: 5px;
+  --theme-bg-light: #f8f9fa;
+  --theme-text-color: black;
+  --theme-bg-info: #0dcaf0;
 }
+
+/* ------------------------------------------------------ Theme */
+
+*:not(.button):not(select):not(input) {
+  color: var(--theme-text-color) !important;
+}
+
+.bg-light {
+  background-color: var(--theme-bg-light) !important;
+}
+.bg-info {
+  background-color: var(--theme-bg-info) !important;
+}
+
+/* ------------------------------------------------------ Theme */
 
 .App {
   font-family: sans-serif;
@@ -18,10 +36,6 @@
 .game-answer {
   flex: 48%;
   margin: 1%;
-}
-
-.bg-info {
-  background-color: lightgrey !important;
 }
 
 .lds-dual-ring {

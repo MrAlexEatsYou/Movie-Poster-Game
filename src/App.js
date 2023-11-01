@@ -5,6 +5,7 @@ import "./styles.css";
 import winningMessages from "./winningMessages.json";
 
 const initialState = {
+  darkTheme: false,
   movieList: [],
   gameMovieList: [],
   loading: false,
@@ -280,10 +281,22 @@ export default function App() {
 
   useEffect(() => {
     let index = appStates.gameBlurValue;
-    document.documentElement.style.setProperty(
+    let documentElemntStyle = document.documentElement.style
+
+    documentElemntStyle.setProperty(
       "--poster-blur",
       `${blurValues[index][1]}px`,
     );
+
+    if(appStates.darkTheme){
+      documentElemntStyle.setProperty('--theme-bg-light', 'black')
+      documentElemntStyle.setProperty('--theme-text-color', 'white')
+      documentElemntStyle.setProperty('--theme-bg-info', 'slategrey')
+    }else{
+      documentElemntStyle.setProperty('--theme-bg-light', '#f8f9fa')
+      documentElemntStyle.setProperty('--theme-text-color', 'black')
+      documentElemntStyle.setProperty('--theme-bg-info', '#0dcaf0')
+    }
   });
 
   const handleFilterChange = (event) => {
@@ -383,6 +396,16 @@ export default function App() {
                 onChange={handleLevelChange}
               />
             </div>
+            <button
+              className="button btn btn-secondary"
+              onClick={() => {
+                ToggleState(["darkTheme"]);
+              }}
+            >
+              {appStates.darkTheme
+                ? "Change to light theme"
+                : "Change to dark theme"}
+            </button>
           </div>
 
           <button
