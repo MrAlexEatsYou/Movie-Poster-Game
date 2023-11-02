@@ -315,6 +315,16 @@ export default function App() {
 
   const handleLevelChange = (event) => {
     let inputValue = event.target.value;
+    let setNumbers = event.target.value.replace(/\D+/g, "");
+    console.log(setNumbers);
+    console.log(setNumbers > 50);
+    if (setNumbers > 50) {
+      setNumbers = 50;
+    }
+    if (setNumbers < 1) {
+      setNumbers = 1;
+    }
+    event.target.value = setNumbers;
     setAppStates((currentStates) => {
       return {
         ...currentStates,
@@ -394,10 +404,12 @@ export default function App() {
               </label>
               <input
                 placeholder="10"
+                min="1"
+                max="50"
                 name="game-levels"
-                type="text"
+                type="number"
                 className="game-levels col-2"
-                onChange={handleLevelChange}
+                onKeyUp={handleLevelChange}
               />
             </div>
             <button
@@ -406,7 +418,7 @@ export default function App() {
                 themeState ? setThemeState(false) : setThemeState(true);
               }}
             >
-              {themeState ? "Change to light theme" : "Change to dark theme"}
+              {themeState ? "Light Theme" : "Dark Theme"}
             </button>
           </div>
 
