@@ -279,24 +279,27 @@ export default function App() {
     });
   };
 
+  function SetTheme() {
+    let documentElemntStyle = document.documentElement.style;
+    if (appStates.darkTheme) {
+      documentElemntStyle.setProperty("--theme-bg-light", "black");
+      documentElemntStyle.setProperty("--theme-text-color", "white");
+      documentElemntStyle.setProperty("--theme-bg-info", "slategrey");
+    } else {
+      documentElemntStyle.setProperty("--theme-bg-light", "#f8f9fa");
+      documentElemntStyle.setProperty("--theme-text-color", "black");
+      documentElemntStyle.setProperty("--theme-bg-info", "lightgrey");
+    }
+  }
+
   useEffect(() => {
     let index = appStates.gameBlurValue;
-    let documentElemntStyle = document.documentElement.style
-
+    let documentElemntStyle = document.documentElement.style;
     documentElemntStyle.setProperty(
       "--poster-blur",
       `${blurValues[index][1]}px`,
     );
-
-    if(appStates.darkTheme){
-      documentElemntStyle.setProperty('--theme-bg-light', 'black')
-      documentElemntStyle.setProperty('--theme-text-color', 'white')
-      documentElemntStyle.setProperty('--theme-bg-info', 'slategrey')
-    }else{
-      documentElemntStyle.setProperty('--theme-bg-light', '#f8f9fa')
-      documentElemntStyle.setProperty('--theme-text-color', 'black')
-      documentElemntStyle.setProperty('--theme-bg-info', '#0dcaf0')
-    }
+    SetTheme();
   });
 
   const handleFilterChange = (event) => {

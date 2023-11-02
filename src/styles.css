@@ -2,7 +2,7 @@
   --poster-blur: 5px;
   --theme-bg-light: #f8f9fa;
   --theme-text-color: black;
-  --theme-bg-info: #0dcaf0;
+  --theme-bg-info: lightgrey;
 }
 
 /* ------------------------------------------------------ Theme */
@@ -18,7 +18,7 @@
   background-color: var(--theme-bg-info) !important;
 }
 
-/* ------------------------------------------------------ Theme */
+/* ------------------------------------------------------ Utilities */
 
 .App {
   font-family: sans-serif;
@@ -37,6 +37,8 @@
   flex: 48%;
   margin: 1%;
 }
+
+/* ------------------------------------------------------ Animation */
 
 .lds-dual-ring {
   display: inline-block;
