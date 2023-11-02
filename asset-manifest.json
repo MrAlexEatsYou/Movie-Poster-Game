@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/Movie-Poster-Game/static/css/main.08b33380.css",
-    "main.js": "/Movie-Poster-Game/static/js/main.88dd8e92.js",
+    "main.css": "/Movie-Poster-Game/static/css/main.00c77bcf.css",
+    "main.js": "/Movie-Poster-Game/static/js/main.e79c553b.js",
     "index.html": "/Movie-Poster-Game/index.html",
-    "main.08b33380.css.map": "/Movie-Poster-Game/static/css/main.08b33380.css.map",
-    "main.88dd8e92.js.map": "/Movie-Poster-Game/static/js/main.88dd8e92.js.map"
+    "main.00c77bcf.css.map": "/Movie-Poster-Game/static/css/main.00c77bcf.css.map",
+    "main.e79c553b.js.map": "/Movie-Poster-Game/static/js/main.e79c553b.js.map"
   },
   "entrypoints": [
-    "static/css/main.08b33380.css",
-    "static/js/main.88dd8e92.js"
+    "static/css/main.00c77bcf.css",
+    "static/js/main.e79c553b.js"
   ]
 }
