@@ -5,7 +5,6 @@ import "./styles.css";
 import winningMessages from "./winningMessages.json";
 
 const initialState = {
-  darkTheme: false,
   movieList: [],
   gameMovieList: [],
   loading: false,
@@ -35,6 +34,8 @@ const initialState = {
 
 export default function App() {
   const [appStates, setAppStates] = useState(initialState);
+
+  const [themeState, setThemeState] = useState(false);
 
   var answerButtons = document.querySelectorAll(".game-answer");
 
@@ -281,7 +282,7 @@ export default function App() {
 
   function SetTheme() {
     let documentElemntStyle = document.documentElement.style;
-    if (appStates.darkTheme) {
+    if (themeState) {
       documentElemntStyle.setProperty("--theme-bg-light", "black");
       documentElemntStyle.setProperty("--theme-text-color", "white");
       documentElemntStyle.setProperty("--theme-bg-info", "slategrey");
@@ -402,12 +403,10 @@ export default function App() {
             <button
               className="button btn btn-secondary"
               onClick={() => {
-                ToggleState(["darkTheme"]);
+                themeState ? setThemeState(false) : setThemeState(true);
               }}
             >
-              {appStates.darkTheme
-                ? "Change to light theme"
-                : "Change to dark theme"}
+              {themeState ? "Change to light theme" : "Change to dark theme"}
             </button>
           </div>
 
