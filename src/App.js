@@ -39,10 +39,6 @@ export default function App() {
 
   var answerButtons = document.querySelectorAll(".game-answer");
 
-  useEffect(() => {
-    console.log(appStates);
-  });
-
   function RandomNumber(upperLimit) {
     return Math.floor(Math.random() * upperLimit);
   }
@@ -153,7 +149,6 @@ export default function App() {
     answerArr[1] = appStates.movieList[movieListRange];
     answerArr[2] = appStates.movieList[movieListRange + 1];
     answerArr[3] = appStates.movieList[movieListRange + 2];
-    console.log(answerArr);
 
     answerArr[0].isAnswer = true;
     answerArr[1].isAnswer = false;
@@ -165,7 +160,6 @@ export default function App() {
   }
 
   function ReturnLevelAnswers(index) {
-    //console.log(appStates.levelAnswers);
     if (appStates.levelAnswers[index]) {
       if ("original_title" in appStates.levelAnswers[index]) {
         return appStates.levelAnswers[index].original_title;
@@ -176,7 +170,6 @@ export default function App() {
   }
 
   function IsAnswer(index) {
-    console.log(appStates.levelAnswers[index].isAnswer);
     if (appStates.levelAnswers[index].isAnswer) {
       DisableAnswers();
       answerButtons[index].classList.add("btn-success");
@@ -189,7 +182,6 @@ export default function App() {
       });
       setTimeout(() => IncrementLevel(), 1500);
     } else {
-      console.log("DisableAnswer");
       DisableAnswer(index);
       setAppStates((currentState) => {
         return { ...currentState, levelScore: currentState.levelScore - 1 };
@@ -198,7 +190,6 @@ export default function App() {
   }
 
   function DisableAnswer(index) {
-    console.log(answerButtons);
     answerButtons[index].classList.add("btn-danger");
     answerButtons[index].classList.remove("btn-primary");
   }
@@ -316,8 +307,6 @@ export default function App() {
   const handleLevelChange = (event) => {
     let inputValue = event.target.value;
     let setNumbers = event.target.value.replace(/\D+/g, "");
-    console.log(setNumbers);
-    console.log(setNumbers > 50);
     if (setNumbers > 50) {
       setNumbers = 50;
     }
